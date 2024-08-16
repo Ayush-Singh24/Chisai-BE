@@ -7,6 +7,7 @@ import (
 
 	"github.com/Ayush-Singh24/chisai-be/database"
 	"github.com/Ayush-Singh24/chisai-be/helpers"
+	"github.com/asaskevich/govalidator"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
@@ -53,11 +54,11 @@ func ShortenURL(c *fiber.Ctx) error {
 		}
 	}
 
-	// if !govalidator.IsURL(body.URL){
-	// 	return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-	// 		"error" : "Invalid URL",
-	// 	})
-	// }
+	if !govalidator.IsURL(body.URL) {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid URL",
+		})
+	}
 
 	if !helpers.RemoveDomainError(body.URL) {
 		return c.Status(fiber.StatusServiceUnavailable).JSON(fiber.Map{
